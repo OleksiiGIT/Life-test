@@ -16,3 +16,11 @@
     -o-transition: opacity .1s ease-in-out;
     transition: opacity .1s ease-in-out;
 }
+
+.AnswerItem.success{
+    background: green;
+}
+
+.AnswerItem.error{
+    background: red;
+}
