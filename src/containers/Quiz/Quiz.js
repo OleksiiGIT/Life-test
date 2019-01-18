@@ -40,7 +40,7 @@ class Quiz extends Component{
 
         if (this.state.answerState){
             const key = Object.keys(this.state.answerState)[0]
-            if (this.state.answerState[key] === 'success'){
+            if (this.state.answerState[key]){
                 return
             }
         }
@@ -49,9 +49,8 @@ class Quiz extends Component{
         const results = this.state.results
 
         if (question.rightAnswerId === answerId ){
-
-            if (!results[answerId]) {
-                results[answerId] = 'success'
+            if (!results[question.id]) {
+                results[question.id] = 'success'
             }
 
             this.setState({
@@ -59,34 +58,43 @@ class Quiz extends Component{
                 results
             })
 
-            const timer = window.setTimeout(()=>{
-
-                if (this.isQuizFinished()) {
-                    this.setState({
-                        isFinished: true
-                    })
-                }else {
-                    this.setState({
-                        activeQuestion: this.state.activeQuestion + 1,
-                        answerState: null
-                    })
-                }
-
-                window.clearTimeout(timer)
-            },500)
-
         }else {
-            results[answerId] = 'error'
+            results[question.id] = 'error'
             this.setState({
                 answerState: {[answerId]: 'error'},
                 results
             })
         }
 
+        const timer = window.setTimeout(()=>{
+
+            if (this.isQuizFinished()) {
+                this.setState({
+                    isFinished: true
+                })
+            }else {
+                this.setState({
+                    activeQuestion: this.state.activeQuestion + 1,
+                    answerState: null
+                })
+            }
+
+            window.clearTimeout(timer)
+        },500)
+
     }
 
     isQuizFinished() {
         return this.state.activeQuestion + 1 === this.state.quiz.length
+    }
+
+    retryHandler = () => {
+        this.setState({
+            results: {},
+            isFinished: false,
+            activeQuestion: 0,
+            answerState: null
+        })
     }
 
     render() {
@@ -101,6 +109,7 @@ class Quiz extends Component{
                             <FinishedQuiz
                                 results={this.state.results}
                                 quiz={this.state.quiz}
+                                onRetry={this.retryHandler}
                             />
                         :
                             <ActiveQuiz
