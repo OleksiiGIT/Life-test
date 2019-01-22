@@ -11,6 +11,11 @@
     color: #fff;
 }
 
+.QuizList h3{
+    color: #fff;
+    text-align: center;
+}
+
 .QuizList ul {
     list-style: none;
     margin: 0;

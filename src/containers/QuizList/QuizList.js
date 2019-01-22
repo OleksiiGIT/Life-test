@@ -1,15 +1,18 @@
 import React, {Component} from 'react'
 import classes from './QuizList.css'
-import {NavLink} from "react-router-dom";
+import {NavLink} from "react-router-dom"
+import {fetchQuizes} from '../../store/actions/quiz'
+import Loader from '../../components/UI/Loader/Loader'
+import {connect} from 'react-redux'
 
-export default class QuizList extends Component {
+class QuizList extends Component {
 
     renderQuizes() {
-        return [1,2,3].map((quiz,index)=>{
+        return this.props.quizes.map(quiz=>{
             return (
-                <li key={index}>
-                    <NavLink to={'/quiz/' + quiz}>
-                        Test {quiz}
+                <li key={quiz.id}>
+                    <NavLink to={'/quiz/' + quiz.id}>
+                        {quiz.name}
                     </NavLink>
                 </li>
             )
@@ -17,7 +20,7 @@ export default class QuizList extends Component {
     }
 
     componentDidMount() {
-
+        this.props.fetchQuizes()
     }
 
     render() {
@@ -26,11 +29,29 @@ export default class QuizList extends Component {
                 <div>
                     <h1>QuizList</h1>
 
-                    <ul>
-                        {this.renderQuizes()}
-                    </ul>
+                    { this.props.quizes.length !== 0
+                        ? this.props.loading
+                            ? <Loader/>
+                            : <ul>{this.renderQuizes()}</ul>
+                        : <h3>No tests</h3>
+                    }
                 </div>
             </div>
         )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        quizes: state.quiz.quizes,
+        loading: state.quiz.loading,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        fetchQuizes: () => dispatch(fetchQuizes())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuizList)
