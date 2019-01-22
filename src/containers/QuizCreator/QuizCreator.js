@@ -5,6 +5,8 @@ import {createControl, validate, validateForm} from '../../form/formFramework'
 import Input from '../../components/UI/Input/Input'
 import Auxillary from '../../hoc/Auxillary/Auxillary'
 import Select from '../../components/UI/Select/Select'
+import {connect} from "react-redux"
+import {createQuizQuestion, finishCreateQuiz} from "../../store/actions/create"
 
 function createOptionControl(number) {
     return createControl({
@@ -27,11 +29,10 @@ function createFormControls() {
     }
 }
 
-export default class QuizCreator extends Component {
+class QuizCreator extends Component {
 
     state = {
         rightAnswer: 1,
-        quiz: [],
         isFormValid: false,
         formControls: createFormControls()
     }
@@ -43,16 +44,13 @@ export default class QuizCreator extends Component {
     addQuestionHandler = e => {
         e.preventDefault()
 
-        const quiz = this.state.quiz.concat()
-        const index = quiz.length + 1
-
         const {question, option1, option2, option3, option4} = this.state.formControls
 
         const questionItem = {
             question: question.value,
-            id: index,
+            id: this.props.quiz.length + 1,
             rightAnswerId: this.state.rightAnswer,
-            answer: [
+            answers: [
                 {text: option1.value, id: option1.id},
                 {text: option2.value, id: option2.id},
                 {text: option3.value, id: option3.id},
@@ -60,10 +58,9 @@ export default class QuizCreator extends Component {
             ]
         }
 
-        quiz.push(questionItem)
+        this.props.createQuizQuestion(questionItem)
 
         this.setState({
-            quiz,
             rightAnswer: 1,
             isFormValid: false,
             formControls: createFormControls()
@@ -72,7 +69,15 @@ export default class QuizCreator extends Component {
 
     createQuizHandler = e => {
         e.preventDefault()
-        console.log(this.state.quiz)
+
+        this.setState({
+            rightAnswer: 1,
+            isFormValid: false,
+            formControls: createFormControls()
+        })
+        this.props.finishCreateQuiz()
+
+        alert('Test created')
     }
 
     changeHandler = (value, controlName) => {
@@ -153,7 +158,7 @@ export default class QuizCreator extends Component {
                         <Button
                             type="success"
                             onClick={this.createQuizHandler}
-                            disabled={this.state.quiz.length === 0}
+                            disabled={this.props.quiz.length === 0}
                         >
                             Create test
                         </Button>
@@ -163,3 +168,18 @@ export default class QuizCreator extends Component {
         )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        quiz: state.create.quiz
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        createQuizQuestion: item => dispatch(createQuizQuestion(item)),
+        finishCreateQuiz: () => dispatch(finishCreateQuiz())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuizCreator)
