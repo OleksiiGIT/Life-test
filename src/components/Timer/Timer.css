@@ -1,0 +1,8 @@
+.Timer {
+    text-align: center;
+}
+
+.Timer p {
+    display: inline-block;
+    margin: 0;
+}

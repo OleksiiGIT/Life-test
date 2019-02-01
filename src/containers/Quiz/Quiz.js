@@ -4,7 +4,7 @@ import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz'
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz'
 import Loader from '../../components/UI/Loader/Loader'
 import {connect} from "react-redux"
-import {fetchQuizById, quizAnswerClick, retryHandler} from "../../store/actions/quiz"
+import {fetchQuizById, quizAnswerClick, retryHandler, timerEnd} from "../../store/actions/quiz"
 
 class Quiz extends Component{
 
@@ -39,6 +39,7 @@ class Quiz extends Component{
                                 questionLength={this.props.quiz.length}
                                 questionNumber={this.props.activeQuestion + 1}
                                 answerState={this.props.answerState}
+                                timerEnd={this.props.timerEnd}
                             />
                     }
 
@@ -63,7 +64,8 @@ function mapDispatchToProps(dispatch) {
     return {
         fetchQuizById: id => dispatch(fetchQuizById(id)),
         quizAnswerClick: answerId => dispatch(quizAnswerClick(answerId)),
-        retryHandler: () => dispatch(retryHandler())
+        retryHandler: () => dispatch(retryHandler()),
+        timerEnd: () => dispatch(timerEnd())
     }
 }
 

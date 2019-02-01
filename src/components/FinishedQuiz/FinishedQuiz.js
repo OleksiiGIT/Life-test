@@ -17,10 +17,21 @@ const FinishedQuiz = props => {
         <div className={classes.FinishedQuiz}>
             <ul>
                 { props.quiz.map((quizItem, index) => {
+
+                    let resultIcon = 'fa-times'
+                    const resultIconColor = []
+
+                    if (props.results[quizItem.id]) {
+                        resultIcon = props.results[quizItem.id] === 'error' ? 'fa-times' : 'fa-check'
+                        resultIconColor.push(props.results[quizItem.id])
+                    }else{
+                        resultIconColor.push('error')
+                    }
+
                     const cls = [
                         'fa',
-                        props.results[quizItem.id] === 'error' ? 'fa-times' : 'fa-check',
-                        classes[props.results[quizItem.id]]
+                        resultIcon,
+                        classes[resultIconColor],
                     ]
 
                     return (

@@ -4,7 +4,7 @@ import {
     FETCH_QUIZES_ERROR,
     FETCH_QUIZES_START,
     FETCH_QUIZES_SUCCESS,
-    FINISH_QUIZ,
+    FINISH_QUIZ, FINISH_TIMER,
     QUIZ_NEXT_QUESTIONS,
     QUIZ_SET_STATE,
     RETRY_HANDLER
@@ -22,11 +22,13 @@ export function fetchQuizes() {
 
             const quizes = []
 
-            Object.keys(response.data).forEach((key, index) => {
+            Object.keys(response.data).forEach((key) => {
+
                 quizes.push({
                     id: key,
-                    name: `Test #${index + 1}`
+                    name: Object.values(response.data[key][0].quizName)
                 })
+
             })
 
             dispatch(fetchQuizesSuccess(quizes))
@@ -44,7 +46,7 @@ export function fetchQuizById(quizId) {
         try{
 
             const respond = await axios.get(`/quizes/${quizId}.json`)
-            const quiz = respond.data
+            const quiz = respond.data[0].quiz
 
             dispatch(fetchQuizSuccess(quiz))
         } catch (e) {
@@ -141,5 +143,11 @@ export function quizNextQuestion(number) {
 export function retryHandler() {
     return {
         type: RETRY_HANDLER
+    }
+}
+
+export function timerEnd() {
+    return {
+        type: FINISH_TIMER
     }
 }

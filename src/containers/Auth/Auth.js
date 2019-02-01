@@ -123,6 +123,19 @@ class Auth extends Component {
     }
 
     render() {
+
+        let errorMessage = 'Something was wrong! Please try later'
+
+        if (this.props.error === 'INVALID_PASSWORD') {
+            errorMessage = 'Wrong password'
+        }
+        if (this.props.error === 'EMAIL_NOT_FOUND') {
+            errorMessage = 'Email is not found'
+        }
+        if (this.props.error === 'USER_DISABLED') {
+            errorMessage = 'User was disabled, please write to the admin'
+        }
+
         return (
             <div className={classes.Auth}>
                 <div>
@@ -131,6 +144,8 @@ class Auth extends Component {
                     <form onSubmit={this.submitHandler} className={classes.AuthForm}>
 
                         {this.renderInput()}
+
+                        {this.props.error !== null ? <h5>{errorMessage}</h5> : null}
 
                         <Button type="success" disabled={!this.state.isFormValid} onClick={this.loginHandler}>Sigh in</Button>
                         <Button type="primary" disabled={!this.state.isFormValid} onClick={this.registerHandler}>Sigh up</Button>
@@ -141,10 +156,16 @@ class Auth extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        error: state.auth.error
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
     }
 }
 
-export default connect(null, mapDispatchToProps)(Auth)
+export default connect(mapStateToProps, mapDispatchToProps)(Auth)

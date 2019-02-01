@@ -4,6 +4,7 @@ import {
     FETCH_QUIZES_START,
     FETCH_QUIZES_SUCCESS,
     FINISH_QUIZ,
+    FINISH_TIMER,
     QUIZ_NEXT_QUESTIONS,
     QUIZ_SET_STATE, RETRY_HANDLER
 } from "../actions/actionTypes"
@@ -52,6 +53,10 @@ export default function quizReducer(state = initialState, action) {
         case RETRY_HANDLER:
             return {
                 ...state, results: {}, isFinished: false, activeQuestion: 0, answerState: null
+            }
+        case FINISH_TIMER:
+            return {
+                ...state, isFinished: true
             }
         default:
             return state

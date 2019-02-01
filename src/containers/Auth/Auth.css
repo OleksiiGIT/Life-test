@@ -26,3 +26,7 @@
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
+
+.AuthForm h5{
+    color: red;
+}

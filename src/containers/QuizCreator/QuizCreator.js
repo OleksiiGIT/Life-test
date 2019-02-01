@@ -6,7 +6,7 @@ import Input from '../../components/UI/Input/Input'
 import Auxillary from '../../hoc/Auxillary/Auxillary'
 import Select from '../../components/UI/Select/Select'
 import {connect} from "react-redux"
-import {createQuizQuestion, finishCreateQuiz} from "../../store/actions/create"
+import {addTestName, createQuizQuestion, finishCreateQuiz} from "../../store/actions/create"
 
 function createOptionControl(number) {
     return createControl({
@@ -70,6 +70,11 @@ class QuizCreator extends Component {
     createQuizHandler = e => {
         e.preventDefault()
 
+        const testName = [
+            prompt('Enter test name','Test')
+        ]
+        this.props.addTestName(testName)
+
         this.setState({
             rightAnswer: 1,
             isFormValid: false,
@@ -77,7 +82,6 @@ class QuizCreator extends Component {
         })
         this.props.finishCreateQuiz()
 
-        alert('Test created')
     }
 
     changeHandler = (value, controlName) => {
@@ -178,7 +182,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createQuizQuestion: item => dispatch(createQuizQuestion(item)),
-        finishCreateQuiz: () => dispatch(finishCreateQuiz())
+        finishCreateQuiz: () => dispatch(finishCreateQuiz()),
+        addTestName: testName => dispatch(addTestName(testName))
     }
 }
 

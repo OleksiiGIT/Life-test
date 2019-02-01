@@ -1,5 +1,5 @@
 import axios from "axios"
-import {AUTH_LOGOUT, AUTH_SUCCESS} from "./actionTypes"
+import {AUTH_FALLED, AUTH_LOGOUT, AUTH_SUCCESS} from "./actionTypes"
 
 export function auth(email, password, isLogin){
     return async dispatch => {
@@ -13,17 +13,47 @@ export function auth(email, password, isLogin){
             url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBlYDADGfsn5osdsyNu_dwTax0ShZA5oiI'
         }
 
-        const response = await axios.post(url, authData)
-        const data = response.data
+        await axios.post(url, authData)
+            .then(response => {
+                const data = response.data
 
-        const expirationDate = new Date( new Date().getTime() + data.expiresIn * 1000)
+                const expirationDate = new Date( new Date().getTime() + data.expiresIn * 1000)
 
-        localStorage.setItem('token', data.idToken)
-        localStorage.setItem('userId', data.localId)
-        localStorage.setItem('expirationDate', expirationDate)
+                localStorage.setItem('token', data.idToken)
+                localStorage.setItem('userId', data.localId)
+                localStorage.setItem('expirationDate', expirationDate)
 
-        dispatch(authSuccess(data.idToken))
-        dispatch(autoLogout(data.expiresIn))
+                dispatch(authSuccess(data.idToken))
+                dispatch(autoLogout(data.expiresIn))
+            })
+            .catch(error => {
+                dispatch(authFalled(error.response.data.error.message))
+            })
+
+        // try {
+        //     const response = await axios.post(url, authData)
+        //
+        //     const data = response.data
+        //
+        //     const expirationDate = new Date( new Date().getTime() + data.expiresIn * 1000)
+        //
+        //     localStorage.setItem('token', data.idToken)
+        //     localStorage.setItem('userId', data.localId)
+        //     localStorage.setItem('expirationDate', expirationDate)
+        //
+        //     dispatch(authSuccess(data.idToken))
+        //     dispatch(autoLogout(data.expiresIn))
+        // } catch (e) {
+        //     dispatch(authFalled())
+        // }
+
+    }
+}
+
+export function authFalled(message) {
+    return {
+        type: AUTH_FALLED,
+        message
     }
 }
 
